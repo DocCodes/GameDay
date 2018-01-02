@@ -1,7 +1,7 @@
 {
   "name": "GameDay",
   "version": "0.1a",
-  "description": "A video-game information platform built with Electron",
+  "description": "A video-game information platform.",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
