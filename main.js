@@ -13,7 +13,7 @@ try {
       "home": "home"
     }
     fs.writeFileSync(path.join(app.getPath('userData'), 'settings.json'), JSON.stringify(defaultSettings))
-    global.__settings = JSON.parse(fs.readFileSync(path.join(app.getPath('userData'), 'settings.json')))
+    global.__settings = defaultSettings
   } else {throw e}
 }
 try {
@@ -36,7 +36,7 @@ function createWindow () {
   })
 
   win.loadURL(url.format({
-    pathname: path.join(__dirname, `index.html`),
+    pathname: path.join(__dirname, 'index.html'),
     protocol: 'file:',
     slashes: true
   }))

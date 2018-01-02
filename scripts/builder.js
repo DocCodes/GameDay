@@ -151,7 +151,7 @@ $(function () {
 function changeSite (name) {
   window.__site = name
   let src = path.join(remote.app.getPath('userData'), 'sites', `${window.__site}.js`)
-  if (window.__site === 'home') {src = path.join(__dirname, 'home.js')}
+  if (window.__site === 'home') {src = path.join(__dirname, 'scripts', 'home.js')}
 
   $.getScript(src, () => {
     siteEmpty()
@@ -181,6 +181,11 @@ function protonsLoad () {
       sortTable($(this).parents('table').get(0), $(this).parent().index())
       this.innerHTML = this.innerHTML === '▼' ? '▲' : '▼'
     })
+  })
+
+  $(document).on('click', 'a[href^="http"]', function(e) {
+    e.preventDefault()
+    remote.shell.openExternal(this.href)
   })
 }
 // </region>

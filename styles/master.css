@@ -33,6 +33,11 @@ hr {
    background-color: #DDDDDD;
 }
 /* </region> */
+/* <region> Classes */
+.strike {
+   text-decoration: line-through;
+}
+/* </region> */
 
 /*
 ██   ██ ███████  █████  ██████  ███████ ██████

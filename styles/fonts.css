@@ -1,86 +1,44 @@
-/* <region> Roboto */
+/* <region> Roboto 300, 400, 500 */
 @font-face {
-   font-family: Roboto;
-   font-weight: 100;
-   font-style: normal;
-
-   src: url("fonts/Roboto/Roboto-Thin.ttf");
-}
-@font-face {
-   font-family: Roboto;
-   font-weight: 100;
-   font-style: italic;
-
-   src: url("fonts/Roboto/Roboto-ThinItalic.ttf");
-}
-@font-face {
-   font-family: Roboto;
+   font-family: 'Roboto';
    font-weight: 300;
    font-style: normal;
 
-   src: url("fonts/Roboto/Roboto-Light.ttf");
+   src: url("fonts/Roboto/Roboto-Light.ttf")  format('truetype');
 }
 @font-face {
-   font-family: Roboto;
+   font-family: 'Roboto';
    font-weight: 300;
    font-style: italic;
 
-   src: url("fonts/Roboto/Roboto-LightItalic.ttf");
+   src: url("fonts/Roboto/Roboto-LightItalic.ttf")  format('truetype');
 }
 @font-face {
-   font-family: Roboto;
+   font-family: 'Roboto';
    font-weight: 400;
    font-style: normal;
 
-   src: url("fonts/Roboto/Roboto-Regular.ttf");
+   src: url("fonts/Roboto/Roboto-Regular.ttf")  format('truetype');
 }
 @font-face {
-   font-family: Roboto;
+   font-family: 'Roboto';
    font-weight: 400;
    font-style: italic;
 
-   src: url("fonts/Roboto/Roboto-Italic.ttf");
+   src: url("fonts/Roboto/Roboto-Italic.ttf")  format('truetype');
 }
 @font-face {
-   font-family: Roboto;
+   font-family: 'Roboto';
    font-weight: 500;
    font-style: normal;
 
-   src: url("fonts/Roboto/Roboto-Medium.ttf");
+   src: url("fonts/Roboto/Roboto-Medium.ttf")  format('truetype');
 }
 @font-face {
-   font-family: Roboto;
+   font-family: 'Roboto';
    font-weight: 500;
    font-style: italic;
 
-   src: url("fonts/Roboto/Roboto-MediumItalic.ttf");
-}
-@font-face {
-   font-family: Roboto;
-   font-weight: 700;
-   font-style: normal;
-
-   src: url("fonts/Roboto/Roboto-Bold.ttf");
-}
-@font-face {
-   font-family: Roboto;
-   font-weight: 700;
-   font-style: italic;
-
-   src: url("fonts/Roboto/Roboto-BoldItalic.ttf");
-}
-@font-face {
-   font-family: Roboto;
-   font-weight: 900;
-   font-style: normal;
-
-   src: url("fonts/Roboto/Roboto-Black.ttf");
-}
-@font-face {
-   font-family: Roboto;
-   font-weight: 900;
-   font-style: italic;
-
-   src: url("fonts/Roboto/Roboto-BlackItalic.ttf");
+   src: url("fonts/Roboto/Roboto-MediumItalic.ttf")  format('truetype');
 }
 /* </region> */
