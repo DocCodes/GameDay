@@ -1,6 +1,6 @@
 {
   "name": "GameDay",
-  "version": "0.1.0",
+  "version": "0.1a",
   "description": "A template for game sites",
   "main": "main.js",
   "scripts": {
