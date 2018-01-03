@@ -4,16 +4,15 @@ const path = require('path')
 const url = require('url')
 let win
 
-
 try {
-  global.__settings = JSON.parse(fs.readFileSync(path.join(app.getPath('userData'), 'settings.json')))
+  global.settings = JSON.parse(fs.readFileSync(path.join(app.getPath('userData'), 'settings.json')))
 } catch (e) {
   if (e.code === 'ENOENT') {
     let defaultSettings = {
       "home": "home"
     }
     fs.writeFileSync(path.join(app.getPath('userData'), 'settings.json'), JSON.stringify(defaultSettings))
-    global.__settings = defaultSettings
+    global.settings = defaultSettings
   } else {throw e}
 }
 try {
@@ -24,12 +23,11 @@ try {
     global.subsites = fs.readdirSync(path.join(app.getPath('userData'), 'sites'))
   } else {throw e}
 }
+global.site = {name: global.settings.home}
 
 
 function createWindow () {
   win = new BrowserWindow({
-    width: 800,
-    height: 600,
     minWidth: 600,
     minHeight: 600,
     backgroundColor: '#181818'

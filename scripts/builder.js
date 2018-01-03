@@ -143,17 +143,25 @@ function buildContents (div) {
 */
 // <region> Load
 $(function () {
-  window.__settings = remote.getGlobal('__settings')
+  window.settings = remote.getGlobal('settings')
   window.subsites = remote.getGlobal('subsites')
-  changeSite('home')
+  window.site = remote.getGlobal('site')
+  changeSite(window.site.name)
 })
 
 function changeSite (name) {
-  window.__site = name
-  let src = path.join(remote.app.getPath('userData'), 'sites', `${window.__site}.js`)
-  if (window.__site === 'home') {src = path.join(__dirname, 'scripts', 'home.js')}
 
-  $.getScript(src, () => {
+  global.site.src = path.join(remote.app.getPath('userData'), 'sites', `${name}.json`)
+  if (name === 'home') {global.site.src = path.join(__dirname, 'scripts', 'home.json')}
+
+  $.getJSON(global.site.src, (d) => {
+    global.site.name = name
+
+    global.site.contents = d
+    if (d.script) {
+      eval(d.script.join("\n"))
+      delete global.site.contents.script
+    }
     siteEmpty()
     siteLoad()
   })
@@ -163,11 +171,11 @@ function siteEmpty () {
   $('#main-content').html('')
 }
 function siteLoad () {
-  document.title = `GameDay - ${PAGE.title}`
-  $('#site-title').html(PAGE.title)
+  document.title = `GameDay - ${window.site.contents.title}`
+  $('#site-title').html(window.site.contents.title)
 
-  buildHeader(PAGE.header)
-  for (div of PAGE.contents) {
+  buildHeader(window.site.contents.header)
+  for (div of window.site.contents.contents) {
     buildContents(div)
   }
   protonsLoad()
@@ -183,9 +191,8 @@ function protonsLoad () {
     })
   })
 
-  $(document).on('click', 'a[href^="http"]', function(e) {
+  $('a[href^="http"]').click((e) => {
     e.preventDefault()
-    remote.shell.openExternal(this.href)
   })
 }
 // </region>
