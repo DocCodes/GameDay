@@ -16,6 +16,7 @@
     "type": "git",
     "url": "https://github.com/DocCodes/GameDay.git"
   },
+  "license": "Apache-2.0",
   "devDependencies": {
     "electron": "~1.7.8"
   },
