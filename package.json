@@ -1,13 +1,25 @@
 {
   "name": "GameDay",
-  "version": "0.1a",
+  "author": "Evan Young",
+  "version": "0.1.0",
   "description": "A video-game information platform.",
+  "keywords": [
+    "video-games",
+    "games",
+    "steam"
+  ],
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
-  "author": "Evan Young",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DocCodes/GameDay.git"
+  },
   "devDependencies": {
     "electron": "~1.7.8"
+  },
+  "dependencies": {
+    "semver": "^5.4.1"
   }
 }
