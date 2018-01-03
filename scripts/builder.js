@@ -74,7 +74,7 @@ function sortTable(tbl, n) {
 // <region> Builders
 function buildHeader (inst) {
   for (a of inst.links) {
-    $('.flex-header').append(`<a href="${a.link}">${a.display}</a>`)
+    $('.flex-header #site-links').append(`<a href="${a.link}">${a.display}</a>`)
   }
 }
 
@@ -135,6 +135,23 @@ function buildContents (div) {
 // </region>
 
 /*
+███    ██ ███████ ██     ██     ██████   █████   ██████  ███████
+████   ██ ██      ██     ██     ██   ██ ██   ██ ██       ██
+██ ██  ██ █████   ██  █  ██     ██████  ███████ ██   ███ █████
+██  ██ ██ ██      ██ ███ ██     ██      ██   ██ ██    ██ ██
+██   ████ ███████  ███ ███      ██      ██   ██  ██████  ███████
+*/
+// <region> New Page
+function setSiteMode (md) {
+  site.mode = md
+  // $('#site-mode').html(other)
+  // $('#site-mode').click(function () {
+  //   setSiteMode(other)
+  // })
+}
+// </region>
+
+/*
 ██       ██████   █████  ██████
 ██      ██    ██ ██   ██ ██   ██
 ██      ██    ██ ███████ ██   ██
@@ -150,49 +167,51 @@ $(function () {
 })
 
 function changeSite (name) {
+  window.site.src = path.join(remote.app.getPath('userData'), 'sites', `${name}.json`)
+  if (name === 'home') {window.site.src = path.join(__dirname, 'scripts', 'home.json')}
 
-  global.site.src = path.join(remote.app.getPath('userData'), 'sites', `${name}.json`)
-  if (name === 'home') {global.site.src = path.join(__dirname, 'scripts', 'home.json')}
+  $.getJSON(window.site.src, (d) => {
+    window.site.name = name
+    Object.keys(d).forEach(function (k) {
+      window.site[k] = d[k]
+    })
 
-  $.getJSON(global.site.src, (d) => {
-    global.site.name = name
-
-    global.site.contents = d
-    if (d.script) {
-      eval(d.script.join("\n"))
-      delete global.site.contents.script
+    if (window.site.script) {
+      eval(window.site.script.join("\n"))
+      delete window.site.script
     }
     siteEmpty()
     siteLoad()
   })
 }
 function siteEmpty () {
-  $('.flex-header').html('<h1 id="site-title"></h1>')
+  setSiteMode('view')
+  $('#site-links').html('')
+  $('#site-title').html('')
+
   $('#main-content').html('')
 }
 function siteLoad () {
-  document.title = window.site.contents.title
-  $('#site-title').html(window.site.contents.title)
+  document.title = `GameDay - ${window.site.title}`
+  $('#site-title').html(window.site.title)
 
-  buildHeader(window.site.contents.header)
-  for (div of window.site.contents.contents) {
+  buildHeader(window.site.header)
+  for (div of window.site.contents) {
     buildContents(div)
   }
   protonsLoad()
 }
 
 function protonsLoad () {
-  var table = $('.proton-list table')
-  $('.proton-list span.sortable').each(function () {
-    $(this).click(function () {
-      console.log($(this).parents('table').get(0), $(this).parent().index())
-      sortTable($(this).parents('table').get(0), $(this).parent().index())
-      this.innerHTML = this.innerHTML === '▼' ? '▲' : '▼'
-    })
+  $('.proton-list span.sortable').click(function () {
+    console.log($(this).parents('table').get(0), $(this).parent().index())
+    sortTable($(this).parents('table').get(0), $(this).parent().index())
+    this.innerHTML = this.innerHTML === '▼' ? '▲' : '▼'
   })
 
-  $('a[href^="http"]').click((e) => {
+  $('a[href^="http"]').click(function (e) {
+    remote.shell.openExternal(this.href)
     e.preventDefault()
-  })
+ })
 }
 // </region>

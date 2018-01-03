@@ -1,7 +1,8 @@
 {
   "name": "GameDay",
+  "productName": "GameDay",
   "author": "Evan Young",
-  "version": "0.1.0a",
+  "version": "1.0.0a",
   "description": "A video-game information platform.",
   "keywords": [
     "video-games",
@@ -11,9 +12,9 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "pack-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --prune=true --out=builds",
-    "pack-win": "electron-packager . gameday --overwrite --asar=true --platform=win32 --arch=ia32 --prune=true --out=builds --version-string.CompanyName=\"Evan Young\" --version-string.FileDescription=\"A video-game information platform\" --version-string.ProductName=\"GameDay\"",
-    "pack-tux": "electron-packager . gameday --overwrite --asar=true --platform=linux --arch=x64 --prune=true --out=builds"
+    "pack-mac": "electron-packager . gameday --overwrite --asar --platform=darwin --arch=x64  --prune=true --out=builds --app-copyright\"Copyright © 2018 Evan Young\" --app-bundle-id=\"com.evanyoung.gameday\"",
+    "pack-win": "electron-packager . gameday --overwrite --asar --platform=win32  --arch=x64 --prune=true --out=builds --app-copyright\"Copyright © 2018 Evan Young\" --win32metadata.CompanyName=\"Evan Young\" --win32metadata.FileDescription=\"A video-game information platform.\" --win32metadata.ProductName=\"GameDay\" --win32metadata.requested-execution-level=\"user\"",
+    "pack-lux": "electron-packager . gameday --overwrite --asar --platform=linux  --arch=x64  --prune=true --out=builds --app-copyright\"Copyright © 2018 Evan Young\""
   },
   "repository": {
     "type": "git",

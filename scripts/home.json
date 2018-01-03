@@ -1,5 +1,6 @@
 {
   "title": "GameDay",
+  "editable": false,
   "header": {
     "links": [
       {
@@ -53,7 +54,7 @@
     "for (st of subsites) {",
       "let s = st.split('.')[0]",
       "$.getJSON(path.join(remote.app.getPath('userData'), 'sites', st), (d) => {",
-        "window.site.contents.contents[1][1].items.push([d.title, `<a href=\"javascript:changeSite('${s}')\">Open ${d.title}</a>`])",
+        "window.site.contents[1][1].items.push([d.title, `<a href=\"javascript:changeSite('${s}')\">Open ${d.title}</a>`])",
         "siteEmpty()",
         "siteLoad()",
       "})",

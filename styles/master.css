@@ -37,6 +37,12 @@ hr {
 .strike {
    text-decoration: line-through;
 }
+.fright {
+   float: right;
+}
+.fleft {
+   float: left;
+}
 /* </region> */
 
 /*
@@ -55,8 +61,16 @@ header {
    background-color: var(--doc-bg);
 }
 #site-title {
-   margin-right: 1em;
    margin-left: 1em;
+}
+#site-links > a {
+   margin: auto 0.5em;
+}
+#site-mode {
+   flex-grow: 1;
+   text-align: right;
+   cursor: pointer;
+   font-size: 2em;
 }
 .flex-header > * {
    margin: 16px 0.5em;

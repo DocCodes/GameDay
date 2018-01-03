@@ -35,7 +35,7 @@ try {
     global.subsites = fs.readdirSync(path.join(userPath, 'sites'))
   } else {throw e}
 }
-global.site = {name: global.settings.home}
+global.site = {name: global.settings.home, mode: 'view'}
 // </region>
 
 function createWindow () {
