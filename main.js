@@ -57,14 +57,14 @@ function createWindow () {
 }
 
 app.on('ready', () => {
-   if (process.platform === 'darwin') {
-      app.setAboutPanelOptions({
-         'applicationName': app.getName(),
-         'applicationVersion': app.getVersion(),
-         'copyright': 'Copyright © 2018 Evan Young.\n All rights reserved.'
-      })
-   }
-   createWindow()
+  if (process.platform === 'darwin') {
+    app.setAboutPanelOptions({
+      'applicationName': app.getName(),
+      'applicationVersion': app.getVersion(),
+      'copyright': 'Copyright © 2018 Evan Young.\n All rights reserved.'
+    })
+  }
+  createWindow()
 })
 
 app.on('window-all-closed', () => {

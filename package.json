@@ -13,7 +13,7 @@
   "scripts": {
     "start": "electron .",
     "pack-mac": "electron-packager . gameday --overwrite --asar --platform=darwin --arch=x64  --prune=true --out=builds --app-copyright\"Copyright © 2018 Evan Young\" --app-bundle-id=\"com.evanyoung.gameday\"",
-    "pack-win": "electron-packager . gameday --overwrite --asar --platform=win32  --arch=x64 --prune=true --out=builds --app-copyright\"Copyright © 2018 Evan Young\" --win32metadata.CompanyName=\"Evan Young\" --win32metadata.FileDescription=\"A video-game information platform.\" --win32metadata.ProductName=\"GameDay\" --win32metadata.requested-execution-level=\"user\"",
+    "pack-win": "electron-packager . gameday --overwrite --asar --platform=win32  --arch=ia32 --prune=true --out=builds --app-copyright\"Copyright © 2018 Evan Young\" --win32metadata.CompanyName=\"Evan Young\" --win32metadata.FileDescription=\"A video-game information platform.\" --win32metadata.ProductName=\"GameDay\" --win32metadata.requested-execution-level=\"user\"",
     "pack-lux": "electron-packager . gameday --overwrite --asar --platform=linux  --arch=x64  --prune=true --out=builds --app-copyright\"Copyright © 2018 Evan Young\""
   },
   "repository": {
