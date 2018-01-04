@@ -10,23 +10,21 @@ const url = require('url')
 ██      ██   ██  ██████     ██     ██████     ██       ██    ██      ███████
 */
 // <region> Prototype
-Location.prototype.query = (() => {
-  let qs = document.location.search.split('+').join(' ')
-  let re = /[?&]?([^=]+)=([^&]*)/g
-  let params = {}
-  let tokens
-  while (tokens = re.exec(qs)) {
-    params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2])
-  }
-  return params
-})()
-
+/**
+ * Gets a string's title
+ * @return {string} The titled string
+ */
 String.prototype.toTitleCase = function () {
   return this.toLowerCase().split(' ').map(function (word) {
     return (word.charAt(0).toUpperCase())+(word.slice(1))
   }).join(' ')
 }
 
+/**
+ * Sorts a table based on column content
+ * @param  {element} tbl The table to sort
+ * @param  {integer} n   The number column to sort by
+ */
 function sortTable(tbl, n) {
   var rows, i, x, y, shouldSwitch
   var switchCount = 0
@@ -78,6 +76,10 @@ function sortTable(tbl, n) {
 ██████   ██████  ██ ███████ ██████  ███████ ██   ██ ███████
 */
 // <region> Builders
+/**
+ * Constructs the header
+ * @param  {object} inst The header instance
+ */
 function buildHeader (inst) {
   if (site.name !== 'home') {
     $('.flex-header #site-links').append('<a href="javascript:changeSite(\'home\')" data-edit="false">GameDay Home</a>')
@@ -87,6 +89,10 @@ function buildHeader (inst) {
   }
 }
 
+/**
+ * Constructs the main content of the site
+ * @param  {object} div The div to render
+ */
 function buildContents (div) {
   $('#main-content').get(0).innerHTML += '<div></div>'
   let par = $('#main-content div').get(-1)
@@ -151,6 +157,10 @@ function buildContents (div) {
 ███████ ██████  ██    ██        ██      ██   ██  ██████  ███████
 */
 // <region> Edit Page
+/**
+ * Sets the site's viewing mode
+ * @param {string} md The viewing mode
+ */
 function setSiteMode (md) {
   let disp, func
 
@@ -161,13 +171,131 @@ function setSiteMode (md) {
   } else {
     site.mode = 'view'
     disp = 'add'
-    func = function () {alert('I should make a new page')}
+    func = newSite
   }
 
   $('#site-mode').html(disp)
   $('#site-mode').each(function () {this.onclick = func})
 }
-function startEdit (loc) {
+
+/**
+ * Hides the overlay
+ */
+function hideOverlay () {
+  $('#edit-overlay').addClass('hidden')
+  setTimeout(function () {
+    $('#edit-overlay').addClass('gone')
+    $('#edit-form').html('')
+  }, 550)
+}
+
+/**
+ * Shows the overlay
+ */
+function showOverlay () {
+  $('#edit-overlay.hidden').removeClass('gone')
+  $('#edit-overlay').removeClass('hidden')
+}
+
+/**
+ * Creates a new site
+ * @param  {boolean} success Whether or not the user cancelled
+ */
+function crtSite (success) {
+  if (success) {
+    let tsite = {}
+    let dsite = {
+      editable: 'true',
+      header: {links: []},
+      contents: ''
+    }
+    $('#edit-form .input-group').each(function () {
+      let k = this.children[1].innerText.toLowerCase()
+      let v = this.children[0].value
+      tsite[k] = v
+    })
+    dsite.title = tsite.title
+    try {
+      fs.writeFileSync(path.join(userData, 'sites', `${tsite.codename}.json`), JSON.stringify(dsite))
+    } catch (e) {
+      throw e
+    }
+  }
+
+  fs.readdir(path.join(userData, 'sites'), function (e, f) {
+    if (e) {throw e}
+    window.subsites = f
+    changeSite(window.site.name)
+    hideOverlay()
+  })
+}
+
+/**
+ * Generates a new site form
+ */
+function newSite () {
+  let ns = {codename: '', title: ''}
+  for (var prop in ns) {
+    if (ns.hasOwnProperty(prop)) {
+      $('#edit-form').append(`
+        <div class="input-group">
+          <input id="submit-${prop}" name="${prop}" type="text" value="${ns[prop]}" required>
+          <label for="submit-${prop}">${prop.toTitleCase()}</label>
+          <div class="input-bar"></div>
+        </div>
+      `)
+    }
+  }
+  $('#edit-form').append(`
+    <input type="button" class="edit-button" value="Submit" onclick="crtSite(true)">
+    <input type="button" class="edit-button" value="Cancel" onclick="crtSite(false)">
+  `)
+  showOverlay()
+}
+
+/**
+ * Quits editing and save
+ * @param  {boolean} success Whether or not the user cancelled
+ */
+function stopEdit (success) {
+  let tsite = {}
+  if (success && window.edit !== undefined && window.editable) {
+    $('#edit-form .input-group').each(function () {
+      let k = this.children[1].innerText.toLowerCase()
+      let v = this.children[0].value
+      window.edit[k] = v
+    })
+
+    for (var prop in window.site) {
+      if (window.site.hasOwnProperty(prop)) {
+        tsite[prop] = window.site[prop]
+      }
+    }
+    delete tsite.name
+    delete tsite.src
+    delete tsite.mode
+    fs.writeFile(window.site.src, JSON.stringify(tsite), function (e) {if (e) {throw e}})
+    console.log('<FileEdit> File has been updated, now refreshing')
+  } else if (window.site.editable === false) {
+    console.log('<FileEdit> User attempted to edit a non-editable file!')
+  } else if (success === false) {
+    console.log('<FileEdit> User began to edit a node, buton cancelled.')
+  } else {
+    console.log('<FileEdit> Edit confirmed but no selected node.')
+  }
+
+  siteEmpty()
+  siteLoad()
+  delete window.edit
+  hideOverlay()
+}
+
+/**
+ * Generates a node edit form
+ * @param  {object} loc The node to edit
+ */
+function editNode (loc) {
+  window.edit = loc
   for (var prop in loc) {
     if (loc.hasOwnProperty(prop)) {
       $('#edit-form').append(`
@@ -179,13 +307,12 @@ function startEdit (loc) {
       `)
     }
   }
+  $('#edit-form').append(`
+    <input type="button" class="edit-button" value="Submit" onclick="stopEdit(true)">
+    <input type="button" class="edit-button" value="Cancel" onclick="stopEdit(false)">
+  `)
 
-  $('#edit-overlay.hidden').removeClass('gone')
-  $('#edit-overlay').removeClass('hidden')
-}
-function editNode (loc) {
-  console.log(loc)
-  startEdit()
+  showOverlay()
 }
 // </region>
 
@@ -201,27 +328,42 @@ $(function () {
   window.settings = remote.getGlobal('settings')
   window.subsites = remote.getGlobal('subsites')
   window.site = remote.getGlobal('site')
+  window.userData = remote.app.getPath('userData')
+  fs.readdir(path.join(userData, 'sites'), function (e, f) {
+    if (e) {throw e}
+    window.subsites = f
+  })
+
   changeSite(window.site.name)
 })
 
+/**
+ * Changes the active site
+ * @param  {string} name The new site's name
+ */
 function changeSite (name) {
-  window.site.src = path.join(remote.app.getPath('userData'), 'sites', `${name}.json`)
+  window.site.src = path.join(userData, 'sites', `${name}.json`)
   if (name === 'home') {window.site.src = path.join(__dirname, 'scripts', 'home.json')}
 
   $.getJSON(window.site.src, (d) => {
     window.site.name = name
+    delete window.site.script
+    window.raw = {}
     Object.keys(d).forEach(function (k) {
       window.site[k] = d[k]
     })
 
     if (window.site.script) {
       eval(window.site.script.join("\n"))
-      delete window.site.script
     }
     siteEmpty()
     siteLoad()
   })
 }
+
+/**
+ * Empties the current site's contents
+ */
 function siteEmpty () {
   setSiteMode('view')
   $('#site-links').html('')
@@ -229,6 +371,10 @@ function siteEmpty () {
 
   $('#main-content').html('')
 }
+
+/**
+ * Renders the new site
+ */
 function siteLoad () {
   document.title = `GameDay - ${window.site.title}`
   $('#site-title').html(window.site.title)
@@ -240,6 +386,9 @@ function siteLoad () {
   protonsLoad()
 }
 
+/**
+ * Handles the different protonsLoad
+ */
 function protonsLoad () {
   $('.proton-list span.sortable').click(function () {
     console.log($(this).parents('table').get(0), $(this).parent().index())

@@ -4,40 +4,41 @@ const fs = require('fs')
 const path = require('path')
 const url = require('url')
 let win
-let userPath = app.getPath('userData')
+let userData = app.getPath('userData')
 // </region>
 
 // <region> Files and Directories
 try {
-  fs.readdirSync(userPath)
+  fs.readdirSync(userData)
 } catch (e) {
   if (e.code === 'ENOENT') {
-    fs.mkdirSync(userPath)
+    fs.mkdirSync(userData)
   } else {throw e}
 }
 try {
-  global.settings = JSON.parse(fs.readFileSync(path.join(userPath, 'settings.json')))
+  global.settings = JSON.parse(fs.readFileSync(path.join(userData, 'settings.json')))
 } catch (e) {
   if (e.code === 'ENOENT') {
     let defaultSettings = {
       "home": "home"
     }
-    fs.writeFileSync(path.join(userPath, 'settings.json'), '')
-    fs.writeFileSync(path.join(userPath, 'settings.json'), JSON.stringify(defaultSettings))
+    fs.writeFileSync(path.join(userData, 'settings.json'), '')
+    fs.writeFileSync(path.join(userData, 'settings.json'), JSON.stringify(defaultSettings))
     global.settings = defaultSettings
   } else {throw e}
 }
 try {
-  global.subsites = fs.readdirSync(path.join(userPath, 'sites'))
+  global.subsites = fs.readdirSync(path.join(userData, 'sites'))
 } catch (e) {
   if (e.code === 'ENOENT') {
-    fs.mkdirSync(path.join(userPath, 'sites'))
-    global.subsites = fs.readdirSync(path.join(userPath, 'sites'))
+    fs.mkdirSync(path.join(userData, 'sites'))
+    global.subsites = fs.readdirSync(path.join(userData, 'sites'))
   } else {throw e}
 }
 global.site = {name: global.settings.home, mode: 'view'}
 // </region>
 
+// <region> Window Handling
 function createWindow () {
   win = new BrowserWindow({
     minWidth: 600,
@@ -55,7 +56,9 @@ function createWindow () {
     win = null
   })
 }
+// </region>
 
+// <region> App Handling
 app.on('ready', () => {
   if (process.platform === 'darwin') {
     app.setAboutPanelOptions({
@@ -78,3 +81,4 @@ app.on('activate', () => {
     createWindow()
   }
 })
+// </region>
