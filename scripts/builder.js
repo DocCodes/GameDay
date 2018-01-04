@@ -21,6 +21,12 @@ Location.prototype.query = (() => {
   return params
 })()
 
+String.prototype.toTitleCase = function () {
+  return this.toLowerCase().split(' ').map(function (word) {
+    return (word.charAt(0).toUpperCase())+(word.slice(1))
+  }).join(' ')
+}
+
 function sortTable(tbl, n) {
   var rows, i, x, y, shouldSwitch
   var switchCount = 0
@@ -73,6 +79,9 @@ function sortTable(tbl, n) {
 */
 // <region> Builders
 function buildHeader (inst) {
+  if (site.name !== 'home') {
+    $('.flex-header #site-links').append('<a href="javascript:changeSite(\'home\')" data-edit="false">GameDay Home</a>')
+  }
   for (a of inst.links) {
     $('.flex-header #site-links').append(`<a href="${a.link}">${a.display}</a>`)
   }
@@ -135,19 +144,48 @@ function buildContents (div) {
 // </region>
 
 /*
-███    ██ ███████ ██     ██     ██████   █████   ██████  ███████
-████   ██ ██      ██     ██     ██   ██ ██   ██ ██       ██
-██ ██  ██ █████   ██  █  ██     ██████  ███████ ██   ███ █████
-██  ██ ██ ██      ██ ███ ██     ██      ██   ██ ██    ██ ██
-██   ████ ███████  ███ ███      ██      ██   ██  ██████  ███████
+███████ ██████  ██ ████████     ██████   █████   ██████  ███████
+██      ██   ██ ██    ██        ██   ██ ██   ██ ██       ██
+█████   ██   ██ ██    ██        ██████  ███████ ██   ███ █████
+██      ██   ██ ██    ██        ██      ██   ██ ██    ██ ██
+███████ ██████  ██    ██        ██      ██   ██  ██████  ███████
 */
-// <region> New Page
+// <region> Edit Page
 function setSiteMode (md) {
-  site.mode = md
-  // $('#site-mode').html(other)
-  // $('#site-mode').click(function () {
-  //   setSiteMode(other)
-  // })
+  let disp, func
+
+  if (site.editable) {
+    site.mode = md
+    disp = md === 'view' ? 'edit' : 'pageview'
+    func = function () {setSiteMode(md === 'view' ? 'edit' : 'view')}
+  } else {
+    site.mode = 'view'
+    disp = 'add'
+    func = function () {alert('I should make a new page')}
+  }
+
+  $('#site-mode').html(disp)
+  $('#site-mode').each(function () {this.onclick = func})
+}
+function startEdit (loc) {
+  for (var prop in loc) {
+    if (loc.hasOwnProperty(prop)) {
+      $('#edit-form').append(`
+        <div class="input-group">
+          <input id="submit-${prop}" name="${prop}" type="text" value="${loc[prop]}" required>
+          <label for="submit-${prop}">${prop.toTitleCase()}</label>
+          <div class="input-bar"></div>
+        </div>
+      `)
+    }
+  }
+
+  $('#edit-overlay.hidden').removeClass('gone')
+  $('#edit-overlay').removeClass('hidden')
+}
+function editNode (loc) {
+  console.log(loc)
+  startEdit()
 }
 // </region>
 
@@ -209,9 +247,18 @@ function protonsLoad () {
     this.innerHTML = this.innerHTML === '▼' ? '▲' : '▼'
   })
 
-  $('a[href^="http"]').click(function (e) {
-    remote.shell.openExternal(this.href)
-    e.preventDefault()
+  $('a').click(function (e) {
+    if (site.mode === 'edit') {
+      if (!this.dataset.edit) {
+        changeLink({display: this.innerText, link: this.href})
+      }
+      e.preventDefault()
+    } else {
+      if (this.href.startsWith('http')) {
+        remote.shell.openExternal(this.href)
+        e.preventDefault()
+      }
+    }
  })
 }
 // </region>
