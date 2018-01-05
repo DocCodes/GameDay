@@ -259,7 +259,7 @@ function newSite () {
  */
 function stopEdit (success) {
   let tsite = {}
-  if (success && window.edit !== undefined && window.editable) {
+  if (success && window.edit !== undefined && window.site.editable) {
     $('#edit-form .input-group').each(function () {
       let k = this.children[1].innerText.toLowerCase()
       let v = this.children[0].value
@@ -284,9 +284,8 @@ function stopEdit (success) {
     console.log('<FileEdit> Edit confirmed but no selected node.')
   }
 
-  siteEmpty()
+  siteEmpty(false)
   siteLoad()
-  delete window.edit
   hideOverlay()
 }
 
@@ -313,6 +312,7 @@ function editNode (loc) {
   `)
 
   showOverlay()
+  console.log(edit)
 }
 // </region>
 
@@ -364,8 +364,8 @@ function changeSite (name) {
 /**
  * Empties the current site's contents
  */
-function siteEmpty () {
-  setSiteMode('view')
+function siteEmpty (res = true) {
+  if (res) {setSiteMode('view')}
   $('#site-links').html('')
   $('#site-title').html('')
 
@@ -387,7 +387,7 @@ function siteLoad () {
 }
 
 /**
- * Handles the different protonsLoad
+ * Handles the different protons
  */
 function protonsLoad () {
   $('.proton-list span.sortable').click(function () {
@@ -399,7 +399,7 @@ function protonsLoad () {
   $('a').click(function (e) {
     if (site.mode === 'edit') {
       if (!this.dataset.edit) {
-        changeLink({display: this.innerText, link: this.href})
+        editNode(window.site.header.links[$(this).index()-1])
       }
       e.preventDefault()
     } else {
