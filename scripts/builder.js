@@ -22,8 +22,8 @@ String.prototype.toTitleCase = function () {
 
 /**
  * Sorts a table based on column content
- * @param  {element} tbl The table to sort
- * @param  {integer} n   The number column to sort by
+ * @param {element} tbl The table to sort
+ * @param {integer} n   The number column to sort by
  */
 function sortTable(tbl, n) {
   var rows, i, x, y, shouldSwitch
@@ -77,21 +77,8 @@ function sortTable(tbl, n) {
 */
 // <region> Builders
 /**
- * Constructs the header
- * @param  {object} inst The header instance
- */
-function buildHeader (inst) {
-  if (site.name !== 'home') {
-    $('.flex-header #site-links').append('<a href="javascript:changeSite(\'home\')" data-edit="false">GameDay Home</a>')
-  }
-  for (a of inst.links) {
-    $('.flex-header #site-links').append(`<a href="${a.link}">${a.display}</a>`)
-  }
-}
-
-/**
  * Constructs the main content of the site
- * @param  {object} div The div to render
+ * @param {object} div The div to render
  */
 function buildContents (div) {
   $('#main-content').get(0).innerHTML += '<div></div>'
@@ -162,7 +149,7 @@ function buildContents (div) {
  * @param {string} md The viewing mode
  */
 function setSiteMode (md) {
-  let disp, func
+  let disp, func, elms
 
   if (site.editable) {
     site.mode = md
@@ -174,8 +161,42 @@ function setSiteMode (md) {
     func = newSite
   }
 
+  if (site.mode === 'edit') {
+    engageEditMode()
+  } else {
+    disengageEditMode()
+  }
   $('#site-mode').html(disp)
   $('#site-mode').each(function () {this.onclick = func})
+}
+
+function engageEditMode () {
+  $('#site-title').css('cursor', 'pointer')
+  $('#site-title').click(function () {
+    window.edit = {
+      ref: window.site,
+      path: 'window.site'
+    }
+    $('#edit-form').append(`
+      <div class="input-group">
+        <input id="submit-title" name="title" type="text" value="${window.site.title}" required>
+        <label for="submit-title">Title</label>
+        <div class="input-bar"></div>
+      </div>
+      <input type="button" class="edit-button" value="Submit" onclick="stopEdit(0)">
+      <input type="button" class="edit-button" value="Cancel" onclick="stopEdit(1)">
+    `)
+    showOverlay()
+  })
+
+  $('#site-links').append(`<a href="javascript:newNodeLink()" style="font-family:'Material Icons'">add</a>`)
+}
+
+function disengageEditMode () {
+  $('#site-title').css('cursor', '')
+  $('#site-title').click(function () {})
+
+  $('#site-links a:last-child').remove()
 }
 
 /**
@@ -198,16 +219,105 @@ function showOverlay () {
 }
 
 /**
+ * Quits editing and save
+ * @param {boolean} success Whether or not the user cancelled
+ */
+function stopEdit (code) {
+  let tsite = {}
+  for (var prop in window.site) {
+    if (window.site.hasOwnProperty(prop)) {
+      tsite[prop] = window.site[prop]
+    }
+  }
+  delete tsite.name
+  delete tsite.src
+  delete tsite.mode
+
+  if (code === 0) {
+    if (window.edit !== undefined && window.site.editable) {
+      $('#edit-form .input-group').each(function () {
+        let k = this.children[1].innerText.toLowerCase()
+        let v = this.children[0].value
+        window.edit.ref[k] = v
+      })
+    } else if (window.site.editable === false) {
+      console.log('<FileEdit> User attempted to edit a non-editable file!')
+    } else {
+      console.log('<FileEdit> Edit confirmed but no selected node.')
+    }
+  } else if (code === 1) {
+    console.log('<FileEdit> User began to edit a node, but cancelled.')
+  } else if (code === 2) {
+    // HACK: The deletion code uses an exact copy of the data structure (can be duplicants)
+    tsite = JSON.parse(JSON.stringify(tsite).replace(JSON.stringify(edit.ref), ''))
+  }
+  if (code !== 1) {
+    fs.writeFile(window.site.src, JSON.stringify(tsite), function (e) {if (e) {throw e}})
+    console.log('<FileEdit> File has been updated, now refreshing')
+  }
+
+  siteEmpty(false); siteLoad()
+  hideOverlay()
+}
+
+/**
+ * Generates a node edit form
+ * @param {object}  path The node's path
+ * @param {boolean} del Whether or not the node is deleteable
+ */
+function editNode (path, del = true) {
+  window.edit = {
+    ref: eval(path),
+    path: path
+  }
+  for (var prop in window.edit.ref) {
+    if (window.edit.ref.hasOwnProperty(prop)) {
+      $('#edit-form').append(`
+        <div class="input-group">
+          <input id="submit-${prop}" name="${prop}" type="text" value="${window.edit.ref[prop]}" required>
+          <label for="submit-${prop}">${prop.toTitleCase()}</label>
+          <div class="input-bar"></div>
+        </div>
+      `)
+    }
+  }
+  $('#edit-form').append(`
+    <input type="button" class="edit-button" value="Submit" onclick="stopEdit(0)">
+    <input type="button" class="edit-button" value="Cancel" onclick="stopEdit(1)">
+    ${del ? '<input type="button" class="edit-button" value="Delete" onclick="stopEdit(2)">' : ''}
+  `)
+
+  showOverlay()
+}
+// </region>
+
+/*
+███    ██ ███████ ██     ██      ██████  ██████  ███    ██ ████████ ███████ ███    ██ ████████
+████   ██ ██      ██     ██     ██      ██    ██ ████   ██    ██    ██      ████   ██    ██
+██ ██  ██ █████   ██  █  ██     ██      ██    ██ ██ ██  ██    ██    █████   ██ ██  ██    ██
+██  ██ ██ ██      ██ ███ ██     ██      ██    ██ ██  ██ ██    ██    ██      ██  ██ ██    ██
+██   ████ ███████  ███ ███       ██████  ██████  ██   ████    ██    ███████ ██   ████    ██
+*/
+// <region> New Content
+/**
  * Creates a new site
- * @param  {boolean} success Whether or not the user cancelled
+ * @param {boolean} success Whether or not the user cancelled
  */
 function crtSite (success) {
   if (success) {
     let tsite = {}
     let dsite = {
       editable: 'true',
-      header: {links: []},
-      contents: ''
+      links: [],
+      contents: [[
+        {
+          proton: 'textbox',
+          title: 'Fresh Site',
+          text: [
+            'This is a brand-new site. Please enter edit mode using the pencil at the top of the screen.'
+          ]
+        }
+      ]]
     }
     $('#edit-form .input-group').each(function () {
       let k = this.children[1].innerText.toLowerCase()
@@ -254,65 +364,16 @@ function newSite () {
 }
 
 /**
- * Quits editing and save
- * @param  {boolean} success Whether or not the user cancelled
+ * Create a new link
  */
-function stopEdit (success) {
-  let tsite = {}
-  if (success && window.edit !== undefined && window.site.editable) {
-    $('#edit-form .input-group').each(function () {
-      let k = this.children[1].innerText.toLowerCase()
-      let v = this.children[0].value
-      window.edit[k] = v
-    })
-
-    for (var prop in window.site) {
-      if (window.site.hasOwnProperty(prop)) {
-        tsite[prop] = window.site[prop]
-      }
+function newNodeLink () {
+  window.site.links.push(
+    {
+      display: 'New Link',
+      link: 'http://example.com/'
     }
-    delete tsite.name
-    delete tsite.src
-    delete tsite.mode
-    fs.writeFile(window.site.src, JSON.stringify(tsite), function (e) {if (e) {throw e}})
-    console.log('<FileEdit> File has been updated, now refreshing')
-  } else if (window.site.editable === false) {
-    console.log('<FileEdit> User attempted to edit a non-editable file!')
-  } else if (success === false) {
-    console.log('<FileEdit> User began to edit a node, buton cancelled.')
-  } else {
-    console.log('<FileEdit> Edit confirmed but no selected node.')
-  }
-
-  siteEmpty(false)
-  siteLoad()
-  hideOverlay()
-}
-
-/**
- * Generates a node edit form
- * @param  {object} loc The node to edit
- */
-function editNode (loc) {
-  window.edit = loc
-  for (var prop in loc) {
-    if (loc.hasOwnProperty(prop)) {
-      $('#edit-form').append(`
-        <div class="input-group">
-          <input id="submit-${prop}" name="${prop}" type="text" value="${loc[prop]}" required>
-          <label for="submit-${prop}">${prop.toTitleCase()}</label>
-          <div class="input-bar"></div>
-        </div>
-      `)
-    }
-  }
-  $('#edit-form').append(`
-    <input type="button" class="edit-button" value="Submit" onclick="stopEdit(true)">
-    <input type="button" class="edit-button" value="Cancel" onclick="stopEdit(false)">
-  `)
-
-  showOverlay()
-  console.log(edit)
+  )
+  editNode(`window.site.links[${eval(window.site.links.length-1)}]`, true)
 }
 // </region>
 
@@ -339,7 +400,7 @@ $(function () {
 
 /**
  * Changes the active site
- * @param  {string} name The new site's name
+ * @param {string} name The new site's name
  */
 function changeSite (name) {
   window.site.src = path.join(userData, 'sites', `${name}.json`)
@@ -348,7 +409,6 @@ function changeSite (name) {
   $.getJSON(window.site.src, (d) => {
     window.site.name = name
     delete window.site.script
-    window.raw = {}
     Object.keys(d).forEach(function (k) {
       window.site[k] = d[k]
     })
@@ -356,8 +416,7 @@ function changeSite (name) {
     if (window.site.script) {
       eval(window.site.script.join("\n"))
     }
-    siteEmpty()
-    siteLoad()
+    siteEmpty(); siteLoad()
   })
 }
 
@@ -378,12 +437,18 @@ function siteEmpty (res = true) {
 function siteLoad () {
   document.title = `GameDay - ${window.site.title}`
   $('#site-title').html(window.site.title)
+  if (site.name !== 'home') {
+    $('.flex-header #site-links').append('<a href="javascript:changeSite(\'home\')" data-edit="false">GameDay Home</a>')
+  }
+  for (a of window.site.links) {
+    $('.flex-header #site-links').append(`<a href="${a.link}">${a.display}</a>`)
+  }
 
-  buildHeader(window.site.header)
   for (div of window.site.contents) {
     buildContents(div)
   }
   protonsLoad()
+  if (site.mode === 'edit') {engageEditMode()}
 }
 
 /**
@@ -391,15 +456,14 @@ function siteLoad () {
  */
 function protonsLoad () {
   $('.proton-list span.sortable').click(function () {
-    console.log($(this).parents('table').get(0), $(this).parent().index())
     sortTable($(this).parents('table').get(0), $(this).parent().index())
     this.innerHTML = this.innerHTML === '▼' ? '▲' : '▼'
   })
 
   $('a').click(function (e) {
-    if (site.mode === 'edit') {
-      if (!this.dataset.edit) {
-        editNode(window.site.header.links[$(this).index()-1])
+    if (site.mode === 'edit' && !this.dataset.edit) {
+      if ($(this).parent().get(0) === $('#site-links').get(0)) {
+        editNode(`window.site.links[${eval($(this).index()-1)}]`)
       }
       e.preventDefault()
     } else {

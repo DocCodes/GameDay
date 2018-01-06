@@ -8,6 +8,7 @@ let userData = app.getPath('userData')
 // </region>
 
 // <region> Files and Directories
+// TODO: The file checking and creation, might be better to do a loading screen :/
 try {
   fs.readdirSync(userData)
 } catch (e) {

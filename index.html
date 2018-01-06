@@ -8,7 +8,9 @@
       <link rel="stylesheet" href="styles/master.css">
 
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-      <script src="scripts/jquery.js" charset="utf-8"></script>
+      <script type="text/javascript">
+         if (typeof jQuery === 'undefined') {document.write(unescape('%3Cscript src="scripts/jquery.3.2.1.min.js" charset="utf-8"%3E%3C/script%3E'))}
+      </script>
       <script defer src="scripts/builder.js" charset="utf-8"></script>
    </head>
 

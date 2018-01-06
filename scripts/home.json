@@ -1,18 +1,16 @@
 {
   "title": "GameDay",
   "editable": false,
-  "header": {
-    "links": [
-      {
-        "display": "SteamDB",
-        "link": "https://steamdb.info/"
-      },
-      {
-        "display": "Steam",
-        "link": "steam://open/main/"
-      }
-    ]
-  },
+  "links": [
+    {
+      "display": "SteamDB",
+      "link": "https://steamdb.info/"
+    },
+    {
+      "display": "Steam",
+      "link": "steam://open/main/"
+    }
+  ],
   "contents": [
     [
       {
