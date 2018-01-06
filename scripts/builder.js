@@ -1,3 +1,4 @@
+const ipcRenderer = require('electron')
 const remote = require('electron').remote
 const fs = require('fs')
 const path = require('path')
@@ -151,15 +152,20 @@ function buildContents (div) {
 function setSiteMode (md) {
   let disp, func, elms
 
-  if (site.editable) {
-    site.mode = md
-    disp = md === 'view' ? 'edit' : 'pageview'
-    func = function () {setSiteMode(md === 'view' ? 'edit' : 'view')}
-  } else {
-    site.mode = 'view'
-    disp = 'add'
-    func = newSite
-  }
+  site.mode = 'view'
+  disp = 'add'
+  func = newSite
+
+  // XXX: Editing it too much for me to do
+  // if (site.editable) {
+  //   site.mode = md
+  //   disp = md === 'view' ? 'edit' : 'pageview'
+  //   func = function () {setSiteMode(md === 'view' ? 'edit' : 'view')}
+  // } else {
+  //   site.mode = 'view'
+  //   disp = 'add'
+  //   func = newSite
+  // }
 
   if (site.mode === 'edit') {
     engageEditMode()

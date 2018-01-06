@@ -6,17 +6,35 @@
 ██████  ██   ██ ███████ ███████
 */
 /* <region> Base */
-:root, * {
+:root {
+   background-color: #181818;
+
+   user-select: none;
+   app-region: drag;
+
+
+   --doc-bg-alpha: rgba(0, 51, 102, 0.75);
+   --doc-bg-solid: rgba(0, 51, 102, 1.00);
+}
+* {
    font-family: "Roboto", "Arial", sans-serif;
    font-weight: 300;
 
    color: #FFFFFF;
-   --doc-bg-alpha: rgba(0, 51, 102, 0.75);
-   --doc-bg-solid: rgba(0, 51, 102, 1.00);
 }
 body {
    margin: 0 0 0 0;
    padding: 0 0 0 0;
+
+   animation: fadein 0.5s;
+}
+@keyframes fadein {
+   from {
+      opacity: 0;
+   }
+   to {
+      opacity: 1;
+   }
 }
 /* </region> */
 /* <region> Elements */
@@ -71,10 +89,12 @@ header {
    margin: auto 0.5em;
 }
 #site-mode {
-   flex-grow: 1;
-   text-align: right;
-   cursor: pointer;
    font-size: 2em;
+
+   cursor: pointer;
+   text-align: right;
+
+   flex-grow: 1;
 }
 .flex-header > * {
    margin: 16px 0.5em;
@@ -85,23 +105,12 @@ header .wrapper {
    background-color: rgba(0, 0, 0, 0);
 }
 .flex-header {
-   display: -webkit-box;
-   display: -ms-flexbox;
    display: flex;
    flex-direction: row;
 
    align-content: flex-start;
    align-items: flex-end;
-   -webkit-box-align: end;
-   -webkit-box-direction: normal;
-   -webkit-box-orient: horizontal;
-   -webkit-box-pack: start;
-   -ms-flex-align: end;
-   -ms-flex-direction: row;
-   -ms-flex-line-pack: start;
-   -ms-flex-pack: start;
-   -ms-flex-wrap: nowrap;
-       flex-wrap: nowrap;
+   flex-wrap: nowrap;
    justify-content: flex-start;
 }
 /* </region> */
@@ -121,23 +130,16 @@ header .wrapper {
    background-color: var(--doc-bg-alpha);
 }
 .flex-table {
-   display: -webkit-box;
-   display: -ms-flexbox;
    display: flex;
 
-   -webkit-box-pack: space-evenly;
    direction: row;
-   -ms-flex-pack: space-evenly;
-   -ms-flex-wrap: wrap;
-       flex-wrap: wrap;
+   flex-wrap: wrap;
    justify-content: space-evenly;
 }
 .flex-table > div {
    width: 400px;
 
-   -webkit-box-flex: 1;
    flex-grow: 1;
-   -ms-flex-positive: 1;
 }
 .flex-table > div > * {
    margin: 2em;
@@ -174,30 +176,38 @@ header .wrapper {
  ██████    ████   ███████ ██   ██ ███████ ██   ██    ██
 */
 /* <region> Overlay */
-#edit-overlay {
+.overlay {
+   position: fixed;
+   z-index: 50;
    top: 0px;
    left: 0px;
-   position: fixed;
-   height: 100vh;
+
    width: 100vw;
-   background-color: rgba(0, 0, 0, 0.5);
-   opacity: 1.0;
-   z-index: 50;
+   height: 100vh;
+
    transition: 0.5s all ease-in-out;
+
+   opacity: 1.0;
+}
+#edit-overlay {
+   background-color: rgba(0, 0, 0, 0.5);
 }
 #edit-overlay.hidden {
    display: block !important;
+
    opacity: 0.0;
 }
 #edit-overlay.gone {
    z-index: -50;
+
    display: none;
 }
 #edit-form {
-   background-color: var(--doc-bg-solid);
    max-width: 600px;
    margin: auto;
    margin-top: calc(15vh + 3em);
+
+   background-color: var(--doc-bg-solid);
 }
 #edit-form > * {
    margin: 2em;
@@ -216,27 +226,33 @@ header .wrapper {
 }
 .input-group input, .edit-button {
    font-size: 1.5em;
+
+   color: #FFFFFF;
    border: none;
-   color: #FFF;
    border-radius: 0;
    background-color: rgba(0, 0, 0, 0.0);
 }
 .input-group label {
-   position: relative;
    font-size: 1.5em;
    line-height: 1.5em;
-   cursor: text;
-   color: #FFF;
-   opacity: 0.5;
+
+   position: relative;
    top: -1.5em;
+
+   cursor: text;
+
+   opacity: 0.5;
+   color: #FFFFFF;
 }
 .input-group input {
    width: 100%;
    padding-top: 1.5em;
-   border-bottom: 3px solid #FFF;
+
+   border-bottom: 3px solid #FFFFFF;
 }
 .input-group input:focus ~ label, .input-group input:valid ~ label {
    font-size: 1em;
+
    top: -3.6em;
 }
 .edit-button {
