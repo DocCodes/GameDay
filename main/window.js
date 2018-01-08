@@ -8,13 +8,11 @@ const main = module.exports = {
   win: null
 }
 
-const {app, BrowserWindow} = require('electron')
+const {BrowserWindow} = require('electron')
 const config = require('../config')
-const menu = require('./menu')
-
 
 function init () {
-  if (main.win) {return main.win.show()}
+  if (main.win) { return main.win.show() }
   var win = main.win = new BrowserWindow({
     backgroundColor: '#181818',
     darkTheme: true,
@@ -22,7 +20,6 @@ function init () {
     minWidth: config.WINDOW_MIN_WIDTH,
     minHeight: config.WINDOW_MIN_HEIGHT,
     title: config.APP_WINDOW_TITLE,
-    titleBarStyle: 'hidden-inset',
     useContentSize: true,
     width: 1.3 * config.WINDOW_MIN_WIDTH,
     height: 1.4 * config.WINDOW_MIN_HEIGHT
@@ -39,27 +36,27 @@ function init () {
 }
 
 function send (...args) {
-  if (!main.win) {return}
+  if (!main.win) { return }
   main.win.send(...args)
 }
 
 function setProgress (progress) {
-  if (!main.win) return
+  if (!main.win) { return }
   main.win.setProgressBar(progress)
 }
 
 function setTitle (title) {
-  if (!main.win) {return}
+  if (!main.win) { return }
   main.win.setTitle(title)
 }
 
 function show () {
-  if (!main.win) {return}
+  if (!main.win) { return }
   main.win.show()
 }
 
 function toggleDevTools () {
-  if (!main.win) {return}
+  if (!main.win) { return }
   if (main.win.webContents.isDevToolsOpened()) {
     main.win.webContents.closeDevTools()
   } else {
@@ -67,6 +64,6 @@ function toggleDevTools () {
   }
 }
 
-function getIconPath () {
-  return process.platform === 'win32' ? config.APP_ICON + '.ico' : config.APP_ICON + '.png'
-}
+// function getIconPath () {
+//   return process.platform === 'win32' ? config.APP_ICON + '.ico' : config.APP_ICON + '.png'
+// }

@@ -1,5 +1,4 @@
 var appConfig = require('application-config')('GameDay')
-var fs = require('fs')
 var path = require('path')
 
 var APP_NAME = 'GameDay'

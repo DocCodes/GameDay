@@ -1,9 +1,7 @@
-const config = require('../config')
 const {remote, ipcRenderer} = require('electron')
 const fs = require('fs')
 const path = require('path')
-const url = require('url')
-
+const $ = window.$
 
 /*
 ██████  ██████   ██████  ████████  ██████  ████████ ██    ██ ██████  ███████
@@ -19,7 +17,7 @@ const url = require('url')
  */
 String.prototype.toTitleCase = function () {
   return this.toLowerCase().split(' ').map(function (word) {
-    return (word.charAt(0).toUpperCase())+(word.slice(1))
+    return `${(word.charAt(0).toUpperCase())}${(word.slice(1))}`
   }).join(' ')
 }
 
@@ -28,30 +26,30 @@ String.prototype.toTitleCase = function () {
  * @param {element} tbl The table to sort
  * @param {integer} n   The number column to sort by
  */
-function sortTable(tbl, n) {
+function sortTable (tbl, n) {
   var rows, i, x, y, shouldSwitch
   var switchCount = 0
   var switching = true
-  var dir = "asc"
+  var dir = 'asc'
 
   while (switching) {
     switching = false
-    rows = tbl.getElementsByTagName("tr")
+    rows = tbl.getElementsByTagName('tr')
     for (i = 1; i < rows.length - 1; i++) {
       shouldSwitch = false
-      x = rows[i].getElementsByTagName("td")[n].innerHTML
+      x = rows[i].getElementsByTagName('td')[n].innerHTML
       x = isNaN(x) ? x.toLowerCase() : parseFloat(x)
-      y = rows[i + 1].getElementsByTagName("td")[n].innerHTML
+      y = rows[i + 1].getElementsByTagName('td')[n].innerHTML
       y = isNaN(y) ? y.toLowerCase() : parseFloat(y)
 
-      if (dir === "asc") {
+      if (dir === 'asc') {
         if (x > y) {
-          shouldSwitch= true
+          shouldSwitch = true
           break
         }
-      } else if (dir === "desc") {
+      } else if (dir === 'desc') {
         if (x < y) {
-          shouldSwitch= true
+          shouldSwitch = true
           break
         }
       }
@@ -60,10 +58,10 @@ function sortTable(tbl, n) {
     if (shouldSwitch) {
       rows[i].parentNode.insertBefore(rows[i + 1], rows[i])
       switching = true
-      switchCount ++
+      switchCount++
     } else {
-      if (switchCount === 0 && dir === "asc") {
-        dir = "desc"
+      if (switchCount === 0 && dir === 'asc') {
+        dir = 'desc'
         switching = true
       }
     }
@@ -87,7 +85,7 @@ function buildContents (div) {
   $('#main-content').get(0).innerHTML += '<div></div>'
   let par = $('#main-content div').get(-1)
 
-  for (prt of div) {
+  for (let prt of div) {
     let add = ''
 
     switch (prt.proton) {
@@ -99,7 +97,7 @@ function buildContents (div) {
           let groups = {}
           add = `<table>`
 
-          for (li of prt.items) {
+          for (let li of prt.items) {
             if (groups[li[prt.group]] === undefined) {
               groups[li[prt.group]] = []
             }
@@ -111,16 +109,15 @@ function buildContents (div) {
               add += `<tr><td colspan="${Object.keys(prt.header).length - 1}"><h3>${g}</h3></td></tr>`
               add += `<tr><th>${prt.header.slice(prt.group + 1).join('</th><th>')}</th></tr>`
 
-              for (li of groups[g]) {
+              for (let li of groups[g]) {
                 add += `<tr><td>${li.slice(prt.group + 1).join('</td><td>')}</td></tr>`
               }
             }
           }
           add += `</table>`
-
         } else {
           add = `<table><thead><tr><th>${prt.header.join('</th><th>')}</th></tr></thead><tbody>`
-          for (li of prt.items) {
+          for (let li of prt.items) {
             add += `<tr><td>${li.join('</td><td>')}</td></tr>`
           }
           add += `</tbody></table>`
@@ -154,7 +151,7 @@ function buildContents (div) {
 function setSiteMode (md) {
   let disp, func, elms
 
-  site.mode = 'view'
+  window.site.mode = 'view'
   disp = 'add'
   func = newSite
 
@@ -169,13 +166,13 @@ function setSiteMode (md) {
   //   func = newSite
   // }
 
-  if (site.mode === 'edit') {
+  if (window.site.mode === 'edit') {
     engageEditMode()
   } else {
     disengageEditMode()
   }
   $('#site-mode').html(disp)
-  $('#site-mode').each(function () {this.onclick = func})
+  $('#site-mode').each(function () { this.onclick = func} )
 }
 
 function engageEditMode () {
@@ -257,10 +254,10 @@ function stopEdit (code) {
     console.log('<FileEdit> User began to edit a node, but cancelled.')
   } else if (code === 2) {
     // HACK: The deletion code uses an exact copy of the data structure (can be duplicants)
-    tsite = JSON.parse(JSON.stringify(tsite).replace(JSON.stringify(edit.ref), ''))
+    tsite = JSON.parse(JSON.stringify(tsite).replace(JSON.stringify(window.edit.ref), ''))
   }
   if (code !== 1) {
-    fs.writeFile(window.site.src, JSON.stringify(tsite), function (e) {if (e) {throw e}})
+    fs.writeFile(window.site.src, JSON.stringify(tsite), function (e) { if (e) { throw e } })
     console.log('<FileEdit> File has been updated, now refreshing')
   }
 
@@ -334,14 +331,14 @@ function crtSite (success) {
     })
     dsite.title = tsite.title
     try {
-      fs.writeFileSync(path.join(userData, 'sites', `${tsite.codename}.json`), JSON.stringify(dsite))
+      fs.writeFileSync(path.join(window.userData, 'sites', `${tsite.codename}.json`), JSON.stringify(dsite))
     } catch (e) {
       throw e
     }
   }
 
-  fs.readdir(path.join(userData, 'sites'), function (e, f) {
-    if (e) {throw e}
+  fs.readdir(path.join(window.userData, 'sites'), function (e, f) {
+    if (e) { throw e }
     window.subsites = f
     changeSite(window.site.name)
     hideOverlay()
@@ -381,7 +378,7 @@ function newNodeLink () {
       link: 'http://example.com/'
     }
   )
-  editNode(`window.site.links[${eval(window.site.links.length-1)}]`, true)
+  editNode(`window.site.links[${eval(window.site.links.length - 1)}]`, true)
 }
 // </region>
 
@@ -398,8 +395,8 @@ $(function () {
   window.subsites = Object.assign({}, remote.getGlobal('subsites'))
   window.site = Object.assign({}, remote.getGlobal('site'))
   window.userData = remote.app.getPath('userData')
-  fs.readdir(path.join(userData, 'sites'), function (e, f) {
-    if (e) {throw e}
+  fs.readdir(path.join(window.userData, 'sites'), function (e, f) {
+    if (e) { throw e }
     window.subsites = f
   })
 
@@ -419,18 +416,18 @@ function setupIpc () {
  * @param {string} name The new site's name
  */
 function changeSite (name) {
-  window.site.src = path.join(userData, 'sites', `${name}.json`)
-  if (name === 'home') {window.site.src = path.join(__dirname, 'home.json')}
+  window.site.src = path.join(window.userData, 'sites', `${name}.json`)
+  if (name === 'home') { window.site.src = path.join(__dirname, 'home.json') }
 
   $.getJSON(window.site.src, (d) => {
     window.site = Object.assign({src: window.site.src}, d)
     window.site.name = name
 
     if (window.site.script) {
-      eval(window.site.script.join("\n"))
+      eval(window.site.script.join('\n'))
     }
     siteEmpty(); siteLoad()
-    ipcRenderer.send('siteChange', site)
+    ipcRenderer.send('siteChange', window.site)
   })
 }
 
@@ -438,7 +435,7 @@ function changeSite (name) {
  * Empties the current site's contents
  */
 function siteEmpty (res = true) {
-  if (res) {setSiteMode('view')}
+  if (res) { setSiteMode('view') }
   $('#site-links').html('')
   $('#site-title').html('')
 
@@ -451,18 +448,16 @@ function siteEmpty (res = true) {
 function siteLoad () {
   document.title = `GameDay - ${window.site.title}`
   $('#site-title').html(window.site.title)
-  if (site.name !== 'home') {
+  if (window.site.name !== 'home') {
     $('.flex-header #site-links').append('<a href="javascript:changeSite(\'home\')" data-edit="false">GameDay Home</a>')
   }
-  for (a of window.site.links) {
+  for (let a of window.site.links) {
     $('.flex-header #site-links').append(`<a href="${a.link}">${a.display}</a>`)
   }
 
-  for (div of window.site.contents) {
-    buildContents(div)
-  }
+  for (let div of window.site.contents) { buildContents(div) }
   protonsLoad()
-  if (site.mode === 'edit') {engageEditMode()}
+  if (window.site.mode === 'edit') { engageEditMode() }
 }
 
 /**
@@ -475,7 +470,7 @@ function protonsLoad () {
   })
 
   $('a').click(function (e) {
-    if (site.mode === 'edit' && !this.dataset.edit) {
+    if (window.site.mode === 'edit' && !this.dataset.edit) {
       if ($(this).parent().get(0) === $('#site-links').get(0)) {
         editNode(`window.site.links[${eval($(this).index()-1)}]`)
       }
@@ -486,6 +481,6 @@ function protonsLoad () {
         e.preventDefault()
       }
     }
- })
+  })
 }
 // </region>

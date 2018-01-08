@@ -6,19 +6,9 @@ const {app, shell, Menu} = require('electron')
 const config = require('../config')
 const win = require('./window')
 
-
 function init () {
-  menu = Menu.buildFromTemplate(getMenuTemplate())
+  let menu = Menu.buildFromTemplate(getMenuTemplate())
   Menu.setApplicationMenu(menu)
-}
-
-function getMenuItem (label) {
-  for (var i = 0; i < menu.items.length; i++) {
-    let menuItem = menu.items[i].submenu.items.find(function (item) {
-      return item.label === label
-    })
-    if (menuItem) {return menuItem}
-  }
 }
 
 function getMenuTemplate () {
@@ -31,7 +21,7 @@ function getMenuTemplate () {
           accelerator: 'CmdOrCtrl+Shift+E',
           click: () => {
             console.log(global.site)
-            if (global.site.editable) {shell.openItem(global.site.src)}
+            if (global.site.editable) { shell.openItem(global.site.src) }
           }
         },
         {
@@ -55,7 +45,7 @@ function getMenuTemplate () {
           click: () => win.toggleDevTools()
         },
         {type: 'separator'},
-        {role: 'togglefullscreen'},
+        {role: 'togglefullscreen'}
       ]
     },
     {

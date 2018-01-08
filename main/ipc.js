@@ -6,7 +6,6 @@ const {app, ipcMain} = require('electron')
 const dock = require('./dock')
 const main = require('./window')
 
-
 function init () {
   ipcMain.once('ipcReady', (e) => {
     app.ipcReady = true

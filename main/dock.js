@@ -4,13 +4,8 @@ module.exports = {
 
 const {app} = require('electron')
 
-
-function init () {
-  if (!app.dock) {return}
-}
-
 function setBadge (text) {
-  if (!app.dock) {return}
-  log(`setBadge: ${text}`)
+  if (!app.dock) { return }
+  console.log(`setBadge: ${text}`)
   app.dock.setBadge(String(text))
 }

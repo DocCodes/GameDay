@@ -4,7 +4,6 @@ console.time('init')
 const {app} = require('electron')
 const config = require('../config')
 const file = require('./file')
-const dock = require('./dock')
 const ipc = require('./ipc')
 const menu = require('./menu')
 const main = require('./window')
@@ -13,7 +12,7 @@ const main = require('./window')
 // <region> App Handling
 ipc.init()
 app.on('ready', () => {
-  isReady = true
+  let isReady = true
 
   file.init()
   main.init()
@@ -35,7 +34,7 @@ app.on('window-all-closed', () => {
 })
 
 app.on('activate', () => {
-  if (win === null) {
+  if (main === null) {
     main.init()
   }
 })

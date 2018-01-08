@@ -8,11 +8,10 @@ const {app} = require('electron')
 const fs = require('fs')
 const path = require('path')
 
-
 function init () {
   let userData = app.getPath('userData')
   let defaultSettings = {
-    "home": "home"
+    'home': 'home'
   }
 
   readMakeDirSync(userData)
@@ -27,10 +26,9 @@ function readMakeDirSync (p) {
   } catch (e) {
     if (e.code === 'ENOENT') {
       fs.mkdirSync(p)
-    } else {throw e}
-  } finally {
-    return fs.readdirSync(p)
+    } else { throw e }
   }
+  return fs.readdirSync(p)
 }
 
 function readMakeFileSync (p, cont = '') {
@@ -38,7 +36,6 @@ function readMakeFileSync (p, cont = '') {
     return fs.readFileSync(p)
   } catch (e) {
     fs.writeFileSync(p, cont)
-  } finally {
-    return fs.readFileSync(p)
   }
+  return fs.readFileSync(p)
 }
