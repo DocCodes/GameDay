@@ -6,7 +6,7 @@ const {app, ipcMain} = require('electron')
 const dock = require('./dock')
 const main = require('./window')
 
-function init () {
+async function init () {
   ipcMain.once('ipcReady', (e) => {
     app.ipcReady = true
     app.emit('ipcReady')
@@ -17,7 +17,5 @@ function init () {
   ipcMain.on('setProgress', (e, ...args) => main.setProgress(...args))
   ipcMain.on('setTitle', (e, ...args) => main.setTitle(...args))
   ipcMain.on('show', () => main.show())
-  ipcMain.on('siteChange', (e, ...args) => {
-    global.site = args[0]
-  })
+  ipcMain.on('siteChange', (e, ...args) => global.site = args[0])
 }

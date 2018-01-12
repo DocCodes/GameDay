@@ -17,8 +17,8 @@
         "proton": "textbox",
         "title": "Welcome to GameDay!",
         "text": [
-          "This is a cross-platform web-tool designed to help gamers simplify their games and they interact with their games.",
-          "I made this with the intention of using it for Grand Theft Auto Online cars and such. With five garages and nearly 40 cars, I kept forgetting which car was which and why I owned a car; back when we could only have 20 it was much easier to remember each individual car.",
+          "This is a cross-platform web-tool designed to help gamers simplify their games and the way interact with their games.",
+          "I made this with the intention of using it for Grand Theft Auto Online cars and such. With five garages and nearly 40 cars, I kept forgetting which car was which and why I owned a particular car; back when we could only have 20 it was much easier to remember each individual car.",
           "<span class=\"strike\">The beauty of <i>GameDay</i> is that it requires no setup and runs completely in a browser; no need to compile or interpret any code&ndash; JS (<a href=\"https://www.ecma-international.org/ecma-262/7.0/\">ES7</a>). An individual could develop a generator or preview for <i>GameDay</i>.</span>",
           "On New Years Eve (Sunday December 31, 2017) <i>GameDay</i> was ported over to <a href=\"http://electronjs.org/\">Electron</a>."
         ]

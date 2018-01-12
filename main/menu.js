@@ -6,7 +6,7 @@ const {app, shell, Menu} = require('electron')
 const config = require('../config')
 const win = require('./window')
 
-function init () {
+async function init () {
   let menu = Menu.buildFromTemplate(getMenuTemplate())
   Menu.setApplicationMenu(menu)
 }
@@ -64,7 +64,6 @@ function getMenuTemplate () {
   ]
 
   if (process.platform === 'darwin') {
-    // Add Mac app menu
     template.unshift({
       label: config.APP_NAME,
       submenu: [
@@ -117,6 +116,12 @@ function getMenuTemplate () {
           role: 'front'
         }
       ]
+    })
+
+    app.setAboutPanelOptions({
+      'applicationName': config.APP_NAME,
+      'applicationVersion': config.APP_VERSION,
+      'copyright': `${config.APP_COPYRIGHT}.\n All rights reserved.`
     })
   }
 

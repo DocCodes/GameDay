@@ -2,14 +2,14 @@
   "name": "GameDay",
   "productName": "GameDay",
   "author": "Evan Young",
-  "version": "2.0.2a",
+  "version": "2.0.3a",
   "description": "A video-game information platform.",
   "keywords": [
     "video-games",
     "games",
     "steam"
   ],
-  "main": "main/index.js",
+  "main": "main",
   "scripts": {
     "start": "electron .",
     "build-mac": "electron-packager . gameday --overwrite --asar --platform=darwin --arch=x64  --prune=true --out=builds --app-copyright\"Copyright © 2018 Evan Young\" --app-bundle-id=\"com.evanyoung.gameday\"",
@@ -23,7 +23,7 @@
   },
   "license": "Apache-2.0",
   "devDependencies": {
-    "electron": "~1.7.8",
+    "electron": "~1.7.2",
     "electron-installer-dmg": "^0.2.1",
     "electron-packager": "^10.1.1"
   },

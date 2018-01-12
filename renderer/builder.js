@@ -26,7 +26,7 @@ String.prototype.toTitleCase = function () {
  * @param {element} tbl The table to sort
  * @param {integer} n   The number column to sort by
  */
-function sortTable (tbl, n) {
+async function sortTable (tbl, n) {
   var rows, i, x, y, shouldSwitch
   var switchCount = 0
   var switching = true
@@ -148,7 +148,7 @@ function buildContents (div) {
  * Sets the site's viewing mode
  * @param {string} md The viewing mode
  */
-function setSiteMode (md) {
+async function setSiteMode (md) {
   let disp, func, elms
 
   window.site.mode = 'view'
@@ -319,7 +319,7 @@ function crtSite (success) {
           proton: 'textbox',
           title: 'Fresh Site',
           text: [
-            'This is a brand-new site. Please enter edit mode using the pencil at the top of the screen.'
+            'This is a brand-new site. Please use a JSON program to edit this site.'
           ]
         }
       ]]
@@ -348,7 +348,7 @@ function crtSite (success) {
 /**
  * Generates a new site form
  */
-function newSite () {
+async function newSite () {
   let ns = {codename: '', title: ''}
   for (var prop in ns) {
     if (ns.hasOwnProperty(prop)) {
@@ -371,7 +371,7 @@ function newSite () {
 /**
  * Create a new link
  */
-function newNodeLink () {
+async function newNodeLink () {
   window.site.links.push(
     {
       display: 'New Link',

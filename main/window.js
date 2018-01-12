@@ -11,7 +11,7 @@ const main = module.exports = {
 const {BrowserWindow} = require('electron')
 const config = require('../config')
 
-function init () {
+async function init () {
   if (main.win) { return main.win.show() }
   var win = main.win = new BrowserWindow({
     backgroundColor: '#181818',
@@ -19,10 +19,11 @@ function init () {
     // icon: getIconPath(),
     minWidth: config.WINDOW_MIN_WIDTH,
     minHeight: config.WINDOW_MIN_HEIGHT,
+    width: 1.3 * config.WINDOW_MIN_WIDTH,
+    height: 1.4 * config.WINDOW_MIN_HEIGHT,
     title: config.APP_WINDOW_TITLE,
     useContentSize: true,
-    width: 1.3 * config.WINDOW_MIN_WIDTH,
-    height: 1.4 * config.WINDOW_MIN_HEIGHT
+    show: false
   })
   win.loadURL(config.WINDOW_MAIN)
 
@@ -30,7 +31,7 @@ function init () {
     win = null
   })
 
-  win.on('ready-to-show', () => {
+  win.once('ready-to-show', () => {
     win.show()
   })
 }
